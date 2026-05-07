@@ -23,19 +23,22 @@ async function seedDemoIfEmpty(supabase: any, userId: string) {
       strength: 78,
       endurance: 54,
       agility: 61,
+      current_streak: 5,
+      last_workout_date: new Date().toISOString().slice(0, 10),
     })
     .eq("id", userId);
 
+  // Distribution (today = Thu): Thu 3, Wed 2, Tue 1, Mon 2, Sun 0, Sat 1, Fri 1
   const samples: Array<{ type: WorkoutType; exercise: string; sets: number; reps: number; weight: number; daysAgo: number }> = [
     { type: "strength", exercise: "Bench Press", sets: 4, reps: 8, weight: 70, daysAgo: 0 },
     { type: "cardio", exercise: "Running", sets: 1, reps: 1, weight: 0, daysAgo: 0 },
+    { type: "flexibility", exercise: "Yoga Flow", sets: 1, reps: 1, weight: 0, daysAgo: 0 },
     { type: "strength", exercise: "Deadlift", sets: 3, reps: 5, weight: 110, daysAgo: 1 },
-    { type: "flexibility", exercise: "Yoga Flow", sets: 1, reps: 1, weight: 0, daysAgo: 1 },
-    { type: "cardio", exercise: "Cycling", sets: 1, reps: 1, weight: 0, daysAgo: 2 },
-    { type: "strength", exercise: "Squat", sets: 5, reps: 5, weight: 95, daysAgo: 3 },
-    { type: "flexibility", exercise: "Stretch", sets: 1, reps: 1, weight: 0, daysAgo: 4 },
-    { type: "cardio", exercise: "Running", sets: 1, reps: 1, weight: 0, daysAgo: 5 },
-    { type: "strength", exercise: "Pull-ups", sets: 4, reps: 10, weight: 0, daysAgo: 5 },
+    { type: "cardio", exercise: "Cycling", sets: 1, reps: 1, weight: 0, daysAgo: 1 },
+    { type: "strength", exercise: "Squat", sets: 5, reps: 5, weight: 95, daysAgo: 2 },
+    { type: "strength", exercise: "Pull-ups", sets: 4, reps: 10, weight: 0, daysAgo: 3 },
+    { type: "flexibility", exercise: "Stretch", sets: 1, reps: 1, weight: 0, daysAgo: 3 },
+    { type: "cardio", exercise: "Rowing", sets: 1, reps: 1, weight: 0, daysAgo: 5 },
     { type: "strength", exercise: "Overhead Press", sets: 3, reps: 8, weight: 45, daysAgo: 6 },
   ];
   const now = Date.now();
