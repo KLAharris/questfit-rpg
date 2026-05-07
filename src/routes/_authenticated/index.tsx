@@ -53,29 +53,29 @@ function HomePage() {
       </div>
 
       {/* Level + XP card */}
-      <div className="mt-6 rounded-3xl bg-foreground text-background p-5 shadow-card relative overflow-hidden">
-        <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-primary/30 blur-2xl" />
-        <div className="relative flex items-center gap-4">
+      <div className="mt-6 rounded-3xl bg-card p-5 shadow-card relative overflow-hidden border-l-4 border-primary">
+        <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-primary text-primary-foreground grid place-items-center font-display font-bold text-2xl shadow-glow">
             {profile.level}
           </div>
           <div className="flex-1">
-            <p className="text-[10px] uppercase tracking-widest opacity-70 font-semibold">Level</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Level</p>
             <p className="font-display text-xl font-bold">{xpInto} / {XP_PER_LEVEL} XP</p>
           </div>
         </div>
-        <div className="mt-4 h-2.5 w-full rounded-full bg-white/10 overflow-hidden">
+        <div className="mt-4 h-2.5 w-full rounded-full bg-muted overflow-hidden">
           <div className="h-full rounded-full bg-primary" style={{ width: `${xpPct}%` }} />
         </div>
-        <p className="mt-2 text-xs opacity-70">{XP_PER_LEVEL - xpInto} XP to level {profile.level + 1}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{XP_PER_LEVEL - xpInto} XP to level {profile.level + 1}</p>
+        <p className="mt-1 text-xs text-muted-foreground">Total XP: {profile.xp.toLocaleString()}</p>
       </div>
 
       {/* Stats */}
       <h2 className="mt-7 mb-3 font-display text-lg font-bold">Stats</h2>
       <div className="space-y-3">
-        <StatCard label="Strength" value={profile.strength} colorVar="--strength" />
-        <StatCard label="Endurance" value={profile.endurance} colorVar="--endurance" />
-        <StatCard label="Agility" value={profile.agility} colorVar="--agility" />
+        <StatCard label="Strength" icon="💪" value={profile.strength} colorVar="--strength" />
+        <StatCard label="Endurance" icon="🏃" value={profile.endurance} colorVar="--endurance" />
+        <StatCard label="Agility" icon="⚡" value={profile.agility} colorVar="--agility" />
       </div>
 
       {/* Weekly chart */}
@@ -90,10 +90,17 @@ function HomePage() {
                 tickLine={false}
                 tick={{ fontSize: 11, fill: "var(--muted-foreground)", fontWeight: 600 }}
               />
-              <Bar dataKey="count" radius={[8, 8, 8, 8]} maxBarSize={28}>
-                {weekly.map((_: any, i: number) => (
-                  <Cell key={i} fill={i === weekly.length - 1 ? "var(--primary)" : "var(--muted)"} />
-                ))}
+              <Bar dataKey="count" radius={[8, 8, 8, 8]} maxBarSize={28} minPointSize={6}>
+                {weekly.map((d: any, i: number) => {
+                  const isToday = i === weekly.length - 1;
+                  const empty = (d.count ?? 0) === 0;
+                  const fill = empty
+                    ? "color-mix(in oklab, var(--muted-foreground) 12%, transparent)"
+                    : isToday
+                      ? "var(--primary)"
+                      : "#0A0A0A";
+                  return <Cell key={i} fill={fill} />;
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -105,19 +112,27 @@ function HomePage() {
         <>
           <h2 className="mt-7 mb-3 font-display text-lg font-bold">Recent quests</h2>
           <div className="space-y-2">
-            {recent.map((r: any, i: number) => (
-              <div key={i} className="flex items-center justify-between rounded-2xl bg-card p-4 shadow-card">
-                <div>
-                  <p className="font-semibold text-sm">{r.exercise}</p>
-                  <p className="text-xs text-muted-foreground capitalize">
-                    {r.type} · {r.sets}×{r.reps}{r.weight > 0 ? ` · ${r.weight}kg` : ""}
+            {recent.map((r: any, i: number) => {
+              const dot =
+                r.type === "strength" ? "bg-red-500" : r.type === "cardio" ? "bg-blue-500" : "bg-emerald-500";
+              const xp = r.type === "strength" ? 120 : r.type === "cardio" ? 100 : 80;
+              return (
+                <div key={i} className="flex items-center justify-between rounded-2xl bg-card p-4 shadow-card">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${dot}`} />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-sm truncate">{r.exercise}</p>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {r.type} · {r.sets}×{r.reps}{r.weight > 0 ? ` · ${r.weight}kg` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground shrink-0 ml-2">
+                    +{xp} XP · {new Date(r.date).toLocaleDateString(undefined, { weekday: "short" })}
                   </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(r.date).toLocaleDateString(undefined, { weekday: "short" })}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
@@ -125,13 +140,16 @@ function HomePage() {
   );
 }
 
-function StatCard({ label, value, colorVar }: { label: string; value: number; colorVar: string }) {
+function StatCard({ label, icon, value, colorVar }: { label: string; icon: string; value: number; colorVar: string }) {
   const pct = Math.min(100, value);
   return (
     <div className="rounded-2xl bg-card p-4 shadow-card">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold">{label}</p>
-        <p className="font-display font-bold text-lg">{value}</p>
+        <p className="text-sm font-semibold flex items-center gap-2">
+          <span aria-hidden>{icon}</span>
+          {label}
+        </p>
+        <p className="font-display font-bold text-2xl">{value}</p>
       </div>
       <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
         <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: `var(${colorVar})` }} />
