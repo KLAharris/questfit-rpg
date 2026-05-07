@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from "recharts";
@@ -42,133 +43,263 @@ function HomeSkeleton() {
 }
 
 function CastleBackground() {
+  const stars = useMemo(() =>
+    Array.from({ length: 80 }, (_, i) => ({
+      left:  `${(i * 37.7  + 11.3) % 100}%`,
+      top:   `${(i * 53.1  +  7.9) % 88}%`,
+      size:   i % 7 === 0 ? 2.5 : i % 3 === 0 ? 1.5 : 1,
+      delay: `${(i * 0.23) % 4}s`,
+      dur:   `${2 + (i * 0.31) % 3}s`,
+    })), []);
+
+  /* Lime particles — 5 per torch, split left/right */
+  const leftParticles  = useMemo(() => Array.from({ length: 5 }, (_, i) => ({ delay: `${i * 0.65}s`, dur: `${3.2 + i * 0.7}s`, drift: i % 2 === 0 ? 14 : -14 })), []);
+  const rightParticles = useMemo(() => Array.from({ length: 5 }, (_, i) => ({ delay: `${i * 0.55 + 0.3}s`, dur: `${3.5 + i * 0.6}s`, drift: i % 2 === 0 ? -14 : 14 })), []);
+
   return (
     <div
-      className="hidden md:block fixed inset-0 z-0 pointer-events-none overflow-hidden transition-colors duration-500"
-      style={{ background: '#0F0F1A' }}
+      className="hidden md:block fixed inset-0 z-0 pointer-events-none overflow-hidden"
+      style={{ background: '#0A0A1A' }}
       aria-hidden="true"
     >
-      {/* Stone wall texture */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,0.025) 47px, rgba(255,255,255,0.025) 48px),' +
-            'repeating-linear-gradient(90deg, transparent, transparent 71px, rgba(255,255,255,0.02) 71px, rgba(255,255,255,0.02) 72px)',
-        }}
-      />
-
-      {/* Lime particles drifting upward */}
-      {[12, 22, 35, 48, 61, 74, 83, 91].map((left, i) => (
-        <div
-          key={i}
-          className="absolute bottom-0 w-1 h-1 rounded-full bg-[#C8FF00]"
-          style={{
-            left: `${left}%`,
-            animation: `particle-rise ${6 + i * 1.1}s ease-in infinite`,
-            animationDelay: `${i * 0.85}s`,
-            ['--drift' as any]: `${i % 2 === 0 ? 20 : -20}px`,
-            opacity: 0,
-          }}
-        />
+      {/* ── 80 twinkling stars ── */}
+      {stars.map((s, i) => (
+        <div key={i} className="absolute rounded-full bg-white" style={{
+          left: s.left, top: s.top,
+          width: s.size, height: s.size,
+          animation: `twinkle ${s.dur} ease-in-out ${s.delay} infinite`,
+          willChange: 'transform, opacity',
+        }} />
       ))}
 
-      {/* Left torch */}
-      <div className="absolute" style={{ left: '8%', top: '35%' }}>
-        <div
-          className="w-3 h-8 rounded-t-full"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 80%, #FF8C00, #FF4500, transparent)',
-            animation: 'torch-flicker 1.8s ease-in-out infinite',
-            filter: 'blur(1px)',
-            boxShadow: '0 0 20px 8px rgba(255,140,0,0.35), 0 0 40px 16px rgba(255,100,0,0.15)',
-          }}
-        />
-        <div className="w-2 h-5 bg-[#3A2A1A] mx-auto rounded-b" />
-      </div>
+      {/* ── Moon top-right with soft halo ── */}
+      <div className="absolute rounded-full" style={{
+        top: '7%', right: '9%',
+        width: 88, height: 88,
+        background: 'radial-gradient(circle at 38% 38%, #FFFCE8, #E8E8F5 55%, #C8C8E0)',
+        animation: 'moon-glow 5s ease-in-out infinite',
+        willChange: 'box-shadow',
+      }} />
+      {/* moon craters */}
+      <div className="absolute rounded-full" style={{ top: 'calc(7% + 16px)', right: 'calc(9% + 14px)', width: 15, height: 15, background: '#B8B8D8', opacity: 0.22 }} />
+      <div className="absolute rounded-full" style={{ top: 'calc(7% + 40px)', right: 'calc(9% + 30px)', width: 9,  height: 9,  background: '#B8B8D8', opacity: 0.16 }} />
+      <div className="absolute rounded-full" style={{ top: 'calc(7% + 26px)', right: 'calc(9% + 52px)', width: 6,  height: 6,  background: '#B8B8D8', opacity: 0.14 }} />
 
-      {/* Right torch */}
-      <div className="absolute" style={{ right: '8%', top: '35%' }}>
-        <div
-          className="w-3 h-8 rounded-t-full"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 80%, #FF8C00, #FF4500, transparent)',
-            animation: 'torch-flicker 2.1s ease-in-out infinite',
-            animationDelay: '0.4s',
-            filter: 'blur(1px)',
-            boxShadow: '0 0 20px 8px rgba(255,140,0,0.35), 0 0 40px 16px rgba(255,100,0,0.15)',
-          }}
-        />
-        <div className="w-2 h-5 bg-[#3A2A1A] mx-auto rounded-b" />
-      </div>
+      {/* ── 3 clouds drifting left→right ── */}
+      {([
+        { top: '11%', dur: '50s', delay: '0s',    opacity: 0.11, scale: 1.0 },
+        { top: '17%', dur: '68s', delay: '-23s',  opacity: 0.08, scale: 0.72 },
+        { top: '7%',  dur: '85s', delay: '-48s',  opacity: 0.07, scale: 0.5  },
+      ] as const).map((c, i) => (
+        <div key={i} style={{
+          position: 'absolute', top: c.top, left: 0,
+          animation: `cloud-drift ${c.dur} linear ${c.delay} infinite`,
+          willChange: 'transform',
+          opacity: c.opacity,
+          transform: `scale(${c.scale})`,
+          transformOrigin: 'left center',
+        }}>
+          <svg viewBox="0 0 260 90" width="260" height="90">
+            <ellipse cx="130" cy="68" rx="110" ry="22" fill="white" />
+            <ellipse cx="85"  cy="54" rx="52"  ry="32" fill="white" />
+            <ellipse cx="130" cy="46" rx="65"  ry="38" fill="white" />
+            <ellipse cx="175" cy="56" rx="48"  ry="28" fill="white" />
+          </svg>
+        </div>
+      ))}
 
-      {/* Castle SVG silhouette at bottom */}
+      {/* ── 3 ravens flying at different speeds & heights ── */}
+      {([
+        { top: '21%', dur: '26s', delay: '0s',   bobDur: '0.44s', flip: false },
+        { top: '30%', dur: '36s', delay: '-12s',  bobDur: '0.56s', flip: true  },
+        { top: '16%', dur: '46s', delay: '-30s',  bobDur: '0.50s', flip: false },
+      ] as const).map((r, i) => (
+        <div key={i} style={{
+          position: 'absolute', top: r.top,
+          animation: `raven-fly ${r.dur} linear ${r.delay} infinite`,
+          willChange: 'transform',
+        }}>
+          <div style={{
+            animation: `raven-bob ${r.bobDur} ease-in-out infinite`,
+            willChange: 'transform',
+            transform: r.flip ? 'scaleX(-1)' : undefined,
+          }}>
+            {/* Raven SVG — simple winged silhouette */}
+            <svg viewBox="0 0 90 36" width="72" height="29" style={{ display: 'block' }}>
+              {/* left wing */}
+              <path d="M 43 18 C 30 9, 16 14, 2 11 C 14 14, 28 17, 40 20 Z" fill="#1A1A2E" />
+              {/* right wing */}
+              <path d="M 47 18 C 60 9, 74 14, 88 11 C 76 14, 62 17, 50 20 Z" fill="#1A1A2E" />
+              {/* body */}
+              <ellipse cx="45" cy="19" rx="8" ry="4.5" fill="#1A1A2E" />
+              {/* head */}
+              <ellipse cx="52" cy="14" rx="5.5" ry="4.5" fill="#1A1A2E" />
+              {/* beak */}
+              <path d="M 56.5 13 L 63 14.5 L 56.5 16 Z" fill="#1A1A2E" />
+              {/* tail feathers */}
+              <path d="M 38 21 C 32 27, 28 30, 25 29" stroke="#1A1A2E" strokeWidth="2"   fill="none" strokeLinecap="round" />
+              <path d="M 38 21 C 34 28, 31 31, 29 30" stroke="#1A1A2E" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            </svg>
+          </div>
+        </div>
+      ))}
+
+      {/* ── Left torch on wall ── */}
+      {/* glow halo */}
+      <div style={{
+        position: 'absolute', left: 'calc(20% - 35px)', bottom: '148px',
+        width: 70, height: 70, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,160,0,0.55) 0%, rgba(255,80,0,0.22) 45%, transparent 70%)',
+        animation: 'torch-flicker 1.75s ease-in-out infinite',
+        willChange: 'transform, opacity',
+      }} />
+      {/* flame */}
+      <div style={{
+        position: 'absolute', left: 'calc(20% - 5px)', bottom: '172px',
+        width: 10, height: 16,
+        background: 'radial-gradient(ellipse at 50% 85%, #FFE066, #FF7700)',
+        borderRadius: '50% 50% 35% 35%',
+        animation: 'torch-flicker 1.75s ease-in-out infinite',
+        willChange: 'transform, opacity',
+      }} />
+      {/* handle */}
+      <div style={{ position: 'absolute', left: 'calc(20% - 3px)', bottom: '148px', width: 6, height: 24, background: '#5A3A18', borderRadius: 3 }} />
+
+      {/* ── Right torch on wall ── */}
+      <div style={{
+        position: 'absolute', left: 'calc(57% - 35px)', bottom: '148px',
+        width: 70, height: 70, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,160,0,0.55) 0%, rgba(255,80,0,0.22) 45%, transparent 70%)',
+        animation: 'torch-flicker 2.05s ease-in-out infinite',
+        animationDelay: '0.45s',
+        willChange: 'transform, opacity',
+      }} />
+      <div style={{
+        position: 'absolute', left: 'calc(57% - 5px)', bottom: '172px',
+        width: 10, height: 16,
+        background: 'radial-gradient(ellipse at 50% 85%, #FFE066, #FF7700)',
+        borderRadius: '50% 50% 35% 35%',
+        animation: 'torch-flicker 2.05s ease-in-out infinite',
+        animationDelay: '0.45s',
+        willChange: 'transform, opacity',
+      }} />
+      <div style={{ position: 'absolute', left: 'calc(57% - 3px)', bottom: '148px', width: 6, height: 24, background: '#5A3A18', borderRadius: 3 }} />
+
+      {/* ── Lime particles rising from left torch ── */}
+      {leftParticles.map((p, i) => (
+        <div key={i} style={{
+          position: 'absolute', left: '20%', bottom: '172px',
+          width: 3, height: 3, borderRadius: '50%', background: '#C8FF00',
+          animation: `particle-rise ${p.dur} ease-in ${p.delay} infinite`,
+          willChange: 'transform, opacity',
+          ['--drift' as any]: `${p.drift}px`,
+          opacity: 0,
+        }} />
+      ))}
+
+      {/* ── Lime particles rising from right torch ── */}
+      {rightParticles.map((p, i) => (
+        <div key={i} style={{
+          position: 'absolute', left: '57%', bottom: '172px',
+          width: 3, height: 3, borderRadius: '50%', background: '#C8FF00',
+          animation: `particle-rise ${p.dur} ease-in ${p.delay} infinite`,
+          willChange: 'transform, opacity',
+          ['--drift' as any]: `${p.drift}px`,
+          opacity: 0,
+        }} />
+      ))}
+
+      {/* ── Castle silhouette SVG ── */}
       <svg
-        viewBox="0 0 1440 260"
+        viewBox="0 0 1440 310"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '260px' }}
+        style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '310px' }}
       >
-        {/* Ground */}
-        <rect x="0" y="220" width="1440" height="40" fill="#141422" />
-        {/* Left tower */}
-        <rect x="40" y="70" width="120" height="190" fill="#161628" />
-        <rect x="40" y="50" width="22" height="26" fill="#161628" />
-        <rect x="72" y="50" width="22" height="26" fill="#161628" />
-        <rect x="104" y="50" width="22" height="26" fill="#161628" />
-        <rect x="136" y="50" width="22" height="26" fill="#161628" />
-        <line x1="90" y1="10" x2="90" y2="52" stroke="#C8FF00" strokeWidth="2" opacity="0.65" />
-        <polygon points="90,10 118,22 90,34" fill="#C8FF00" opacity="0.65" />
-        {/* Left wall */}
-        <rect x="160" y="155" width="360" height="105" fill="#131321" />
-        <rect x="168" y="135" width="18" height="24" fill="#131321" />
-        <rect x="198" y="135" width="18" height="24" fill="#131321" />
-        <rect x="228" y="135" width="18" height="24" fill="#131321" />
-        <rect x="258" y="135" width="18" height="24" fill="#131321" />
-        <rect x="288" y="135" width="18" height="24" fill="#131321" />
-        <rect x="318" y="135" width="18" height="24" fill="#131321" />
-        <rect x="348" y="135" width="18" height="24" fill="#131321" />
-        <rect x="378" y="135" width="18" height="24" fill="#131321" />
-        <rect x="408" y="135" width="18" height="24" fill="#131321" />
-        <rect x="438" y="135" width="18" height="24" fill="#131321" />
-        <rect x="468" y="135" width="18" height="24" fill="#131321" />
-        {/* Center gate tower */}
-        <rect x="520" y="75" width="200" height="185" fill="#161628" />
-        <rect x="520" y="53" width="24" height="28" fill="#161628" />
-        <rect x="555" y="53" width="24" height="28" fill="#161628" />
-        <rect x="590" y="53" width="24" height="28" fill="#161628" />
-        <rect x="625" y="53" width="24" height="28" fill="#161628" />
-        <rect x="660" y="53" width="24" height="28" fill="#161628" />
-        <rect x="695" y="53" width="24" height="28" fill="#161628" />
-        {/* Gate arch */}
-        <path d="M 565 260 L 565 178 Q 620 138 675 178 L 675 260 Z" fill="#0A0A14" />
-        {/* Center flag */}
-        <line x1="620" y1="12" x2="620" y2="55" stroke="#C8FF00" strokeWidth="2.5" opacity="0.9" />
-        <polygon points="620,12 656,26 620,40" fill="#C8FF00" opacity="0.9" />
-        {/* Right wall */}
-        <rect x="720" y="155" width="360" height="105" fill="#131321" />
-        <rect x="728" y="135" width="18" height="24" fill="#131321" />
-        <rect x="758" y="135" width="18" height="24" fill="#131321" />
-        <rect x="788" y="135" width="18" height="24" fill="#131321" />
-        <rect x="818" y="135" width="18" height="24" fill="#131321" />
-        <rect x="848" y="135" width="18" height="24" fill="#131321" />
-        <rect x="878" y="135" width="18" height="24" fill="#131321" />
-        <rect x="908" y="135" width="18" height="24" fill="#131321" />
-        <rect x="938" y="135" width="18" height="24" fill="#131321" />
-        <rect x="968" y="135" width="18" height="24" fill="#131321" />
-        <rect x="998" y="135" width="18" height="24" fill="#131321" />
-        <rect x="1028" y="135" width="18" height="24" fill="#131321" />
-        {/* Right tower */}
-        <rect x="1080" y="70" width="120" height="190" fill="#161628" />
-        <rect x="1080" y="50" width="22" height="26" fill="#161628" />
-        <rect x="1112" y="50" width="22" height="26" fill="#161628" />
-        <rect x="1144" y="50" width="22" height="26" fill="#161628" />
-        <rect x="1176" y="50" width="22" height="26" fill="#161628" />
-        <line x1="1140" y1="10" x2="1140" y2="52" stroke="#C8FF00" strokeWidth="2" opacity="0.65" />
-        <polygon points="1140,10 1168,22 1140,34" fill="#C8FF00" opacity="0.65" />
-        {/* Far side mini towers */}
-        <rect x="0" y="130" width="42" height="130" fill="#12121F" />
-        <rect x="1398" y="130" width="42" height="130" fill="#12121F" />
+        {/* Ground fill */}
+        <rect x="0" y="270" width="1440" height="40" fill="#10101C" />
+
+        {/* === FAR LEFT MINI TOWER === */}
+        <rect x="0"  y="155" width="38" height="155" fill="#0E0E1A" />
+        <rect x="0"  y="137" width="14" height="20"  fill="#0E0E1A" />
+        <rect x="22" y="137" width="14" height="20"  fill="#0E0E1A" />
+
+        {/* === LEFT OUTER TOWER === */}
+        <rect x="50" y="100" width="120" height="210" fill="#141424" />
+        <rect x="50"  y="80" width="22" height="24" fill="#141424" />
+        <rect x="80"  y="80" width="22" height="24" fill="#141424" />
+        <rect x="110" y="80" width="22" height="24" fill="#141424" />
+        <rect x="140" y="80" width="22" height="24" fill="#141424" />
+        {/* arrow slit */}
+        <rect x="101" y="138" width="10" height="28" rx="5" fill="#09090F" />
+        <rect x="101" y="195" width="10" height="22" rx="5" fill="#09090F" />
+        {/* side flag */}
+        <line x1="84"  y1="42" x2="84"  y2="82" stroke="#C8FF00" strokeWidth="1.5" opacity="0.55" />
+        <polygon points="84,42 108,53 84,64" fill="#C8FF00" opacity="0.5" />
+
+        {/* === LEFT WALL SECTION === */}
+        <rect x="170" y="170" width="310" height="140" fill="#111120" />
+        {/* battlements */}
+        {Array.from({ length: 9 }, (_, k) => (
+          <rect key={k} x={178 + k * 32} y="150" width="20" height="24" fill="#111120" />
+        ))}
+        {/* wall archer slits */}
+        <rect x="246" y="192" width="9" height="26" rx="4" fill="#09090F" />
+        <rect x="340" y="196" width="9" height="26" rx="4" fill="#09090F" />
+        <rect x="434" y="192" width="9" height="26" rx="4" fill="#09090F" />
+
+        {/* === MAIN KEEP — CENTER (tallest) === */}
+        <rect x="480" y="55" width="260" height="255" fill="#161628" />
+        {/* battlements */}
+        {Array.from({ length: 8 }, (_, k) => (
+          <rect key={k} x={488 + k * 30} y="32" width="20" height="28" fill="#161628" />
+        ))}
+        {/* tall windows */}
+        <rect x="520" y="110" width="32" height="60" rx="16" fill="#09090F" />
+        <rect x="590" y="110" width="32" height="60" rx="16" fill="#09090F" />
+        <rect x="660" y="110" width="32" height="60" rx="16" fill="#09090F" />
+        {/* drawbridge pointed arch */}
+        <path d="M 548 310 L 548 216 Q 610 168 672 216 L 672 310 Z" fill="#09090F" />
+        {/* portcullis grid */}
+        {[568, 588, 608, 628, 648].map(x => (
+          <line key={x} x1={x} y1="216" x2={x} y2="310" stroke="#12121E" strokeWidth="3.5" />
+        ))}
+        {[230, 252, 274, 296].map(y => (
+          <line key={y} x1="548" y1={y} x2="672" y2={y} stroke="#12121E" strokeWidth="3.5" />
+        ))}
+        {/* ★ MAIN FLAG — lime, on tallest tower ★ */}
+        <line x1="610" y1="0" x2="610" y2="34" stroke="#C8FF00" strokeWidth="2.5" />
+        <polygon points="610,0 652,15 610,30" fill="#C8FF00" />
+
+        {/* === RIGHT WALL SECTION === */}
+        <rect x="740" y="170" width="310" height="140" fill="#111120" />
+        {Array.from({ length: 9 }, (_, k) => (
+          <rect key={k} x={748 + k * 32} y="150" width="20" height="24" fill="#111120" />
+        ))}
+        <rect x="806"  y="192" width="9" height="26" rx="4" fill="#09090F" />
+        <rect x="900"  y="196" width="9" height="26" rx="4" fill="#09090F" />
+        <rect x="994"  y="192" width="9" height="26" rx="4" fill="#09090F" />
+
+        {/* === RIGHT OUTER TOWER === */}
+        <rect x="1050" y="100" width="120" height="210" fill="#141424" />
+        <rect x="1050" y="80" width="22" height="24" fill="#141424" />
+        <rect x="1080" y="80" width="22" height="24" fill="#141424" />
+        <rect x="1110" y="80" width="22" height="24" fill="#141424" />
+        <rect x="1140" y="80" width="22" height="24" fill="#141424" />
+        <rect x="1091" y="138" width="10" height="28" rx="5" fill="#09090F" />
+        <rect x="1091" y="195" width="10" height="22" rx="5" fill="#09090F" />
+        <line x1="1110" y1="42" x2="1110" y2="82" stroke="#C8FF00" strokeWidth="1.5" opacity="0.55" />
+        <polygon points="1110,42 1134,53 1110,64" fill="#C8FF00" opacity="0.5" />
+
+        {/* === FAR RIGHT MINI TOWER === */}
+        <rect x="1402" y="155" width="38" height="155" fill="#0E0E1A" />
+        <rect x="1402" y="137" width="14" height="20"  fill="#0E0E1A" />
+        <rect x="1424" y="137" width="14" height="20"  fill="#0E0E1A" />
+
+        {/* subtle stone mortar lines on main keep */}
+        {[90, 130, 170, 210, 250].map(y => (
+          <line key={y} x1="480" y1={y} x2="740" y2={y} stroke="#12121E" strokeWidth="1" opacity="0.6" />
+        ))}
       </svg>
     </div>
   );
