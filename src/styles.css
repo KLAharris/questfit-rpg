@@ -81,3 +81,62 @@
 
 @utility shadow-card { box-shadow: var(--shadow-card); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* === DESKTOP THEMED BACKGROUND ANIMATIONS === */
+
+@keyframes torch-flicker {
+  0%, 100% { opacity: 1; transform: scaleX(1) scaleY(1); }
+  20%  { opacity: 0.78; transform: scaleX(0.93) scaleY(1.06); }
+  40%  { opacity: 0.92; transform: scaleX(1.04) scaleY(0.96); }
+  60%  { opacity: 0.72; transform: scaleX(0.90) scaleY(1.10); }
+  80%  { opacity: 0.96; transform: scaleX(1.02) scaleY(0.98); }
+}
+
+@keyframes particle-rise {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.65; }
+  90%  { opacity: 0.25; }
+  100% { transform: translateY(-110vh) translateX(var(--drift, 25px)); opacity: 0; }
+}
+
+@keyframes rune-pulse {
+  0%, 100% { opacity: 0.18; filter: drop-shadow(0 0 4px #7C3AED); }
+  50%       { opacity: 0.72; filter: drop-shadow(0 0 18px #7C3AED) drop-shadow(0 0 36px #7C3AED); }
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.38; }
+  50%       { transform: translateY(-14px) scale(1.12); opacity: 0.72; }
+}
+
+@keyframes sparkle-spin {
+  0%   { transform: translateY(0) rotate(0deg) scale(0); opacity: 0; }
+  20%  { opacity: 1; transform: translateY(-18px) rotate(90deg) scale(1); }
+  80%  { opacity: 0.6; }
+  100% { transform: translateY(-55px) rotate(380deg) scale(0.4); opacity: 0; }
+}
+
+@keyframes mist-drift {
+  0%   { transform: translateX(-15%) scaleX(1.2); opacity: 0.38; }
+  50%  { transform: translateX(6%) scaleX(1.0); opacity: 0.18; }
+  100% { transform: translateX(-15%) scaleX(1.2); opacity: 0.38; }
+}
+
+@keyframes spotlight-breathe {
+  0%, 100% { opacity: 0.12; }
+  50%       { opacity: 0.22; }
+}
+
+/* Frosted-glass cards inside themed pages on desktop */
+@media (min-width: 768px) {
+  .theme-active .bg-card {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .theme-active .bg-amber-50 {
+    background-color: rgba(255, 251, 235, 0.92) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+}

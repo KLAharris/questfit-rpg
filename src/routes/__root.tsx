@@ -95,7 +95,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="min-h-screen bg-background">
-          <div className="mx-auto w-full max-w-[430px] min-h-screen bg-background relative">
+          <div className="mx-auto w-full max-w-[430px] md:max-w-none min-h-screen bg-background relative">
             <Outlet />
           </div>
         </div>
