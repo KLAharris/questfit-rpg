@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import { getStats } from "@/lib/quest.functions";
 import { XP_PER_LEVEL, xpIntoLevel } from "@/lib/xp";
 import { supabase } from "@/integrations/supabase/client";
+import { STATS_STALE } from "@/lib/query-keys";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
@@ -17,15 +18,39 @@ export const Route = createFileRoute("/_authenticated/")({
   component: HomePage,
 });
 
+function Skel({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-2xl bg-muted ${className}`} />;
+}
+
+function HomeSkeleton() {
+  return (
+    <div className="px-5 pt-12 pb-6 space-y-6">
+      <div className="space-y-2">
+        <Skel className="h-3 w-16" />
+        <Skel className="h-8 w-40" />
+        <Skel className="h-6 w-28 rounded-full" />
+      </div>
+      <Skel className="h-32 w-full rounded-3xl" />
+      <div className="space-y-3">
+        <Skel className="h-20 w-full" />
+        <Skel className="h-20 w-full" />
+        <Skel className="h-20 w-full" />
+      </div>
+      <Skel className="h-44 w-full rounded-3xl" />
+    </div>
+  );
+}
+
 function HomePage() {
   const fn = useServerFn(getStats);
   const { data, isLoading } = useQuery({
     queryKey: ["stats"],
     queryFn: () => fn(),
+    staleTime: STATS_STALE,
   });
 
   if (isLoading || !data) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading your hero…</div>;
+    return <HomeSkeleton />;
   }
   const { profile, weekly, recent } = data as any;
   const xpInto = xpIntoLevel(profile.xp);
