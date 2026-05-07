@@ -169,10 +169,27 @@ export const logWorkout = createServerFn({ method: "POST" })
     const newLevel = levelFromXp(newXp);
     const newTitle = titleForLevel(newLevel);
     const statBump = prUnlocked ? 3 : 2;
+
+    // Streak logic
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    const yesterdayStr = new Date(today.getTime() - 86400000).toISOString().slice(0, 10);
+    let newStreak = profile.current_streak ?? 0;
+    if (profile.last_workout_date === todayStr) {
+      // already counted today
+      if (newStreak < 1) newStreak = 1;
+    } else if (profile.last_workout_date === yesterdayStr) {
+      newStreak = newStreak + 1;
+    } else {
+      newStreak = 1;
+    }
+
     const updates: any = {
       xp: newXp,
       level: newLevel,
       title: newTitle,
+      current_streak: newStreak,
+      last_workout_date: todayStr,
     };
     if (data.type === "strength") updates.strength = profile.strength + statBump;
     if (data.type === "cardio") updates.endurance = profile.endurance + statBump;
