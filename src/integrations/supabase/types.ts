@@ -14,7 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          badge_name: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_name: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_name?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      personal_records: {
+        Row: {
+          best_reps: number
+          best_weight: number
+          exercise: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_reps?: number
+          best_weight?: number
+          exercise: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_reps?: number
+          best_weight?: number
+          exercise?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          agility: number
+          created_at: string
+          endurance: number
+          id: string
+          level: number
+          name: string
+          strength: number
+          title: string
+          xp: number
+        }
+        Insert: {
+          agility?: number
+          created_at?: string
+          endurance?: number
+          id: string
+          level?: number
+          name?: string
+          strength?: number
+          title?: string
+          xp?: number
+        }
+        Update: {
+          agility?: number
+          created_at?: string
+          endurance?: number
+          id?: string
+          level?: number
+          name?: string
+          strength?: number
+          title?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      workouts: {
+        Row: {
+          date: string
+          exercise: string
+          id: string
+          reps: number
+          sets: number
+          type: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          date?: string
+          exercise: string
+          id?: string
+          reps?: number
+          sets?: number
+          type: string
+          user_id: string
+          weight?: number
+        }
+        Update: {
+          date?: string
+          exercise?: string
+          id?: string
+          reps?: number
+          sets?: number
+          type?: string
+          user_id?: string
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
