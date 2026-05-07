@@ -66,8 +66,10 @@ export type Database = {
         Row: {
           agility: number
           created_at: string
+          current_streak: number
           endurance: number
           id: string
+          last_workout_date: string | null
           level: number
           name: string
           strength: number
@@ -77,8 +79,10 @@ export type Database = {
         Insert: {
           agility?: number
           created_at?: string
+          current_streak?: number
           endurance?: number
           id: string
+          last_workout_date?: string | null
           level?: number
           name?: string
           strength?: number
@@ -88,8 +92,10 @@ export type Database = {
         Update: {
           agility?: number
           created_at?: string
+          current_streak?: number
           endurance?: number
           id?: string
+          last_workout_date?: string | null
           level?: number
           name?: string
           strength?: number

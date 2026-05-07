@@ -95,6 +95,20 @@ function HomePage() {
         <p className="mt-1 text-xs text-muted-foreground">Total XP: {profile.xp.toLocaleString()}</p>
       </div>
 
+      {/* Streak */}
+      <div className="mt-4 rounded-3xl p-5 flex items-center gap-4 bg-amber-50 ring-1 ring-amber-200">
+        <div className="h-14 w-14 rounded-2xl bg-amber-400/90 grid place-items-center text-3xl shadow-sm">
+          🔥
+        </div>
+        <div className="flex-1">
+          <p className="text-[10px] uppercase tracking-widest text-amber-900/70 font-semibold">Current streak</p>
+          <p className="font-display text-2xl font-bold text-amber-950">
+            {profile.current_streak ?? 0} {(profile.current_streak ?? 0) === 1 ? "day" : "days"}
+          </p>
+        </div>
+        <p className="text-xs text-amber-900/70 font-semibold">Keep it alive!</p>
+      </div>
+
       {/* Stats */}
       <h2 className="mt-7 mb-3 font-display text-lg font-bold">Stats</h2>
       <div className="space-y-3">
