@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from "recharts";
 import { LogOut } from "lucide-react";
-import { getStats } from "@/server/quest.functions";
+import { getStats } from "@/lib/quest.functions";
 import { XP_PER_LEVEL, xpIntoLevel } from "@/lib/xp";
 import { supabase } from "@/integrations/supabase/client";
 

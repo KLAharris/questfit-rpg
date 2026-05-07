@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { logWorkout } from "@/server/quest.functions";
+import { logWorkout } from "@/lib/quest.functions";
 
 export const Route = createFileRoute("/_authenticated/log")({
   head: () => ({

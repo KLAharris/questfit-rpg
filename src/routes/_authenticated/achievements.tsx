@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Lock } from "lucide-react";
-import { getAchievements } from "@/server/quest.functions";
+import { getAchievements } from "@/lib/quest.functions";
 
 export const Route = createFileRoute("/_authenticated/achievements")({
   head: () => ({
