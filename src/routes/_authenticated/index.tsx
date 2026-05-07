@@ -73,9 +73,9 @@ function HomePage() {
       {/* Stats */}
       <h2 className="mt-7 mb-3 font-display text-lg font-bold">Stats</h2>
       <div className="space-y-3">
-        <StatCard label="Strength" value={profile.strength} colorVar="--strength" />
-        <StatCard label="Endurance" value={profile.endurance} colorVar="--endurance" />
-        <StatCard label="Agility" value={profile.agility} colorVar="--agility" />
+        <StatCard label="Strength" icon="💪" value={profile.strength} colorVar="--strength" />
+        <StatCard label="Endurance" icon="🏃" value={profile.endurance} colorVar="--endurance" />
+        <StatCard label="Agility" icon="⚡" value={profile.agility} colorVar="--agility" />
       </div>
 
       {/* Weekly chart */}
