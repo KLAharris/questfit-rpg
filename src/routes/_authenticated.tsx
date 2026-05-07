@@ -1,7 +1,11 @@
 import { createFileRoute, Link, Outlet, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Home, Swords, Trophy, MessageSquare } from "lucide-react";
 import { useAuth } from "@/auth-context";
+import { getStats, getAchievements } from "@/lib/quest.functions";
+import { STATS_STALE, ACHIEVEMENTS_STALE } from "@/lib/query-keys";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
@@ -18,10 +22,28 @@ function AuthenticatedLayout() {
   const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const qc = useQueryClient();
+  const statsFn = useServerFn(getStats);
+  const achievementsFn = useServerFn(getAchievements);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) navigate({ to: "/login" });
   }, [isAuthenticated, loading, navigate]);
+
+  // Warm both caches as soon as we're in the shell
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    qc.prefetchQuery({ queryKey: ["stats"], queryFn: () => statsFn(), staleTime: STATS_STALE });
+    qc.prefetchQuery({ queryKey: ["achievements"], queryFn: () => achievementsFn(), staleTime: ACHIEVEMENTS_STALE });
+  }, [isAuthenticated, qc, statsFn, achievementsFn]);
+
+  const prefetchFor = (to: string) => {
+    if (to === "/") {
+      qc.prefetchQuery({ queryKey: ["stats"], queryFn: () => statsFn(), staleTime: STATS_STALE });
+    } else if (to === "/achievements") {
+      qc.prefetchQuery({ queryKey: ["achievements"], queryFn: () => achievementsFn(), staleTime: ACHIEVEMENTS_STALE });
+    }
+  };
 
   if (loading || !isAuthenticated) {
     return (
@@ -42,6 +64,10 @@ function AuthenticatedLayout() {
               <Link
                 key={to}
                 to={to}
+                preload="intent"
+                onMouseEnter={() => prefetchFor(to)}
+                onTouchStart={() => prefetchFor(to)}
+                onFocus={() => prefetchFor(to)}
                 className={`flex flex-col items-center gap-1 py-2 rounded-xl transition-colors ${
                   active ? "text-foreground" : "text-muted-foreground"
                 }`}
