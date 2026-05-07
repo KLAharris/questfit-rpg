@@ -112,19 +112,28 @@ function HomePage() {
         <>
           <h2 className="mt-7 mb-3 font-display text-lg font-bold">Recent quests</h2>
           <div className="space-y-2">
-            {recent.map((r: any, i: number) => (
-              <div key={i} className="flex items-center justify-between rounded-2xl bg-card p-4 shadow-card">
-                <div>
-                  <p className="font-semibold text-sm">{r.exercise}</p>
-                  <p className="text-xs text-muted-foreground capitalize">
-                    {r.type} · {r.sets}×{r.reps}{r.weight > 0 ? ` · ${r.weight}kg` : ""}
+          <div className="space-y-2">
+            {recent.map((r: any, i: number) => {
+              const dot =
+                r.type === "strength" ? "bg-red-500" : r.type === "cardio" ? "bg-blue-500" : "bg-emerald-500";
+              const xp = r.type === "strength" ? 120 : r.type === "cardio" ? 100 : 80;
+              return (
+                <div key={i} className="flex items-center justify-between rounded-2xl bg-card p-4 shadow-card">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${dot}`} />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-sm truncate">{r.exercise}</p>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {r.type} · {r.sets}×{r.reps}{r.weight > 0 ? ` · ${r.weight}kg` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground shrink-0 ml-2">
+                    +{xp} XP · {new Date(r.date).toLocaleDateString(undefined, { weekday: "short" })}
                   </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(r.date).toLocaleDateString(undefined, { weekday: "short" })}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
@@ -132,13 +141,16 @@ function HomePage() {
   );
 }
 
-function StatCard({ label, value, colorVar }: { label: string; value: number; colorVar: string }) {
+function StatCard({ label, icon, value, colorVar }: { label: string; icon: string; value: number; colorVar: string }) {
   const pct = Math.min(100, value);
   return (
     <div className="rounded-2xl bg-card p-4 shadow-card">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold">{label}</p>
-        <p className="font-display font-bold text-lg">{value}</p>
+        <p className="text-sm font-semibold flex items-center gap-2">
+          <span aria-hidden>{icon}</span>
+          {label}
+        </p>
+        <p className="font-display font-bold text-2xl">{value}</p>
       </div>
       <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
         <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: `var(${colorVar})` }} />
