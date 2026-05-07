@@ -112,7 +112,6 @@ function HomePage() {
         <>
           <h2 className="mt-7 mb-3 font-display text-lg font-bold">Recent quests</h2>
           <div className="space-y-2">
-          <div className="space-y-2">
             {recent.map((r: any, i: number) => {
               const dot =
                 r.type === "strength" ? "bg-red-500" : r.type === "cardio" ? "bg-blue-500" : "bg-emerald-500";
