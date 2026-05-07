@@ -90,10 +90,17 @@ function HomePage() {
                 tickLine={false}
                 tick={{ fontSize: 11, fill: "var(--muted-foreground)", fontWeight: 600 }}
               />
-              <Bar dataKey="count" radius={[8, 8, 8, 8]} maxBarSize={28}>
-                {weekly.map((_: any, i: number) => (
-                  <Cell key={i} fill={i === weekly.length - 1 ? "var(--primary)" : "var(--muted)"} />
-                ))}
+              <Bar dataKey="count" radius={[8, 8, 8, 8]} maxBarSize={28} minPointSize={6}>
+                {weekly.map((d: any, i: number) => {
+                  const isToday = i === weekly.length - 1;
+                  const empty = (d.count ?? 0) === 0;
+                  const fill = empty
+                    ? "color-mix(in oklab, var(--muted-foreground) 12%, transparent)"
+                    : isToday
+                      ? "var(--primary)"
+                      : "#0A0A0A";
+                  return <Cell key={i} fill={fill} />;
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
