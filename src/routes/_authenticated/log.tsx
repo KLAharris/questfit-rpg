@@ -66,13 +66,18 @@ function LogPage() {
             {TYPES.map((t) => (
               <button
                 type="button" key={t.value} onClick={() => setType(t.value)}
-                className={`py-3 px-1 rounded-2xl text-xs font-semibold transition-all whitespace-nowrap ${
+                className={`flex flex-col items-center justify-center gap-1 py-3 px-1 rounded-2xl text-[11px] leading-tight font-semibold transition-all min-w-0 ${
                   type === t.value
                     ? "bg-primary text-primary-foreground shadow-glow"
                     : "bg-card text-foreground shadow-card"
                 }`}
               >
-                {t.label}
+                <span className="text-base leading-none" aria-hidden>
+                  {t.value === "strength" ? "💪" : t.value === "cardio" ? "🏃" : "🧘"}
+                </span>
+                <span className="truncate w-full">
+                  {t.value === "strength" ? "Strength" : t.value === "cardio" ? "Cardio" : "Flexibility"}
+                </span>
               </button>
             ))}
           </div>
