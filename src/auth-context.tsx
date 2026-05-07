@@ -32,6 +32,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Attach Supabase bearer token to same-origin server function requests.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const w = window as any;
+    if (w.__qfFetchPatched) return;
+    w.__qfFetchPatched = true;
+    const original = window.fetch.bind(window);
+    window.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
+      try {
+        const url =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.toString()
+              : (input as Request).url;
+        const isSameOrigin = url.startsWith("/") || url.startsWith(window.location.origin);
+        if (isSameOrigin) {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          if (token) {
+            const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined));
+            if (!headers.has("authorization")) headers.set("authorization", `Bearer ${token}`);
+            init = { ...init, headers };
+          }
+        }
+      } catch {}
+      return original(input as any, init);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
