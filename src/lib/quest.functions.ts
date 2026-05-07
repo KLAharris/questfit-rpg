@@ -70,11 +70,21 @@ export const getStats = createServerFn({ method: "GET" })
 
     await seedDemoIfEmpty(supabase, userId);
 
-    const { data: profile } = await supabase
+    let { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
+
+    // Backfill streak for existing demo users
+    if (profile && (profile.current_streak == null || profile.current_streak === 0) && !profile.last_workout_date) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      await supabase
+        .from("profiles")
+        .update({ current_streak: 5, last_workout_date: todayStr })
+        .eq("id", userId);
+      profile = { ...profile, current_streak: 5, last_workout_date: todayStr };
+    }
 
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const { data: weekRows } = await supabase
