@@ -221,6 +221,57 @@
   100% { transform: translateX(-18%) scaleX(1.25); opacity: 0.38; }
 }
 
+/* Throne room spotlight */
+@keyframes spotlight-breathe {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+}
+
+/* Achievement sparkles */
+@keyframes sparkle-spin {
+  0%, 40%   { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  55%        { opacity: 1; transform: scale(1.2) rotate(180deg); }
+  85%, 100%  { opacity: 0; transform: scale(0.2) rotate(360deg); }
+}
+
+/* Throne pulsing glow */
+@keyframes throne-pulse {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;    transform: translateX(-50%) scale(1.1); }
+}
+
+/* God-ray breathing */
+@keyframes god-ray-breathe {
+  0%, 100% { opacity: 0.06; }
+  50%       { opacity: 0.20; }
+}
+
+/* Knight walk bob (two bobs per cycle) */
+@keyframes knight-bob {
+  0%, 50%, 100% { transform: translateX(-50%) translateY(0px); }
+  25%, 75%      { transform: translateX(-50%) translateY(-3px); }
+}
+
+/* Knight leg swing */
+@keyframes leg-fwd {
+  0%, 100% { transform: rotate(-25deg); }
+  50%       { transform: rotate(25deg); }
+}
+@keyframes leg-bck {
+  0%, 100% { transform: rotate(25deg); }
+  50%       { transform: rotate(-25deg); }
+}
+
+/* Knight arm swing */
+@keyframes arm-fwd {
+  0%, 100% { transform: rotate(12deg); }
+  50%       { transform: rotate(-12deg); }
+}
+@keyframes arm-bck {
+  0%, 100% { transform: rotate(-12deg); }
+  50%       { transform: rotate(12deg); }
+}
+
 /* Frosted-glass cards inside themed pages on desktop */
 @media (min-width: 768px) {
   .theme-active .bg-card {
@@ -233,4 +284,35 @@
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
+
+  /* Dark RPG achievement cards — throne room scene */
+  .ach-card-unlocked {
+    background: rgba(8, 10, 5, 0.88) !important;
+    border: 1px solid rgba(204, 255, 0, 0.55) !important;
+    box-shadow: 0 0 0 1px rgba(204,255,0,0.12), 0 0 26px rgba(204,255,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    opacity: 1 !important;
+  }
+  .ach-card-locked {
+    background: rgba(10, 8, 6, 0.70) !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    box-shadow: none !important;
+    opacity: 0.60 !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+  .ach-icon-unlocked {
+    background: rgba(204,255,0,0.10) !important;
+    border: 1px solid rgba(204,255,0,0.40) !important;
+    box-shadow: 0 0 14px rgba(204,255,0,0.20) !important;
+  }
+  .ach-icon-locked {
+    background: rgba(20,16,10,0.80) !important;
+    filter: grayscale(100%) brightness(0.4) !important;
+  }
+  .ach-name-unlocked { color: #ffffff !important; }
+  .ach-name-locked   { color: rgba(255,255,255,0.25) !important; }
+  .ach-desc-unlocked { color: rgba(255,255,255,0.52) !important; }
+  .ach-desc-locked   { color: rgba(255,255,255,0.15) !important; }
 }

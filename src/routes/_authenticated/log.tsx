@@ -23,108 +23,192 @@ const TYPES = [
 ] as const;
 
 function DungeonBackground() {
+  const drips = [
+    { left: 'calc(240px + 30px)', dur: '5.2s', delay: '0s',   h: '62vh' },
+    { left: 'calc(240px + 120px)',dur: '4.1s', delay: '1.8s', h: '55vh' },
+    { left: '30%', dur: '6.0s', delay: '0.7s', h: '70vh' },
+    { left: '40%', dur: '4.8s', delay: '3.2s', h: '58vh' },
+    { left: '52%', dur: '5.5s', delay: '1.2s', h: '65vh' },
+    { left: '63%', dur: '3.9s', delay: '4.1s', h: '50vh' },
+    { left: '75%', dur: '6.3s', delay: '2.4s', h: '72vh' },
+    { left: '87%', dur: '4.6s', delay: '0.5s', h: '60vh' },
+  ];
+
+  const embers = [5, 12, 19, 27, 35, 43, 51, 59, 66, 73, 81, 88, 94].map((left, i) => ({
+    left:   `${left}%`,
+    dur:    `${3.4 + (i * 0.58) % 2.8}s`,
+    delay:  `${(i * 0.52) % 3.8}s`,
+    size:   i % 4 === 0 ? 4 : 3,
+    color:  i % 3 === 0 ? '#FFAA00' : i % 3 === 1 ? '#FF6600' : '#FF4400',
+    driftA: i % 2 === 0 ?  18 : -16,
+    driftB: i % 2 === 0 ? -10 :  14,
+  }));
+
   return (
     <div
-      className="hidden md:block fixed inset-0 z-0 pointer-events-none overflow-hidden transition-colors duration-500"
-      style={{ background: '#0A0A0F' }}
+      className="hidden md:block fixed inset-0 z-0 pointer-events-none overflow-hidden"
+      style={{ background: '#08080F' }}
       aria-hidden="true"
     >
-      {/* Stone brick pattern */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.018) 39px, rgba(255,255,255,0.018) 40px),' +
-            'repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.014) 59px, rgba(255,255,255,0.014) 60px)',
-        }}
-      />
+      {/* ── Stone brick texture ── */}
+      <div className="absolute inset-0" style={{
+        backgroundImage:
+          'repeating-linear-gradient(0deg, transparent, transparent 43px, rgba(255,255,255,0.022) 43px, rgba(255,255,255,0.022) 44px),' +
+          'repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(255,255,255,0.016) 63px, rgba(255,255,255,0.016) 64px)',
+      }} />
 
-      {/* Dungeon arch at top */}
+      {/* ── Dungeon arch at top — stone ceiling with arch cut-out ── */}
       <svg
-        viewBox="0 0 1440 200"
+        viewBox="0 0 1440 230"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '200px' }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '230px' }}
       >
-        {/* Arch frame */}
-        <path
-          d="M 0 0 L 0 120 Q 100 180 200 120 L 200 0 Z"
-          fill="#111118"
-          opacity="0.9"
-        />
-        <path
-          d="M 1240 0 L 1240 120 Q 1340 180 1440 120 L 1440 0 Z"
-          fill="#111118"
-          opacity="0.9"
-        />
-        {/* Stone blocks at top */}
-        <rect x="0" y="0" width="1440" height="12" fill="#0D0D14" />
-        <rect x="0" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="56" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="112" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="168" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="224" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="280" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="336" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="392" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="448" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="504" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="560" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="616" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="672" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="728" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="784" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="840" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="896" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="952" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="1008" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="1064" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="1120" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="1176" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="1232" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="1288" y="0" width="48" height="30" fill="#0D0D14" />
-        <rect x="1344" y="0" width="48" height="30" fill="#0E0E16" />
-        <rect x="1400" y="0" width="40" height="30" fill="#0D0D14" />
+        {/* Ceiling fill — the arch opening is the gap in the bottom edge */}
+        <path d="M 0 0 L 1440 0 L 1440 230 L 980 230 Q 720 95 460 230 L 0 230 Z" fill="#0B0B14" />
+
+        {/* Alternating brick rows */}
+        {Array.from({ length: 26 }, (_, k) => (
+          <rect key={`a${k}`} x={k * 56}      y="0"  width="52" height="36" fill={k%2===0?'#0D0D18':'#0E0E1A'} stroke="#07070E" strokeWidth="1" />
+        ))}
+        {Array.from({ length: 27 }, (_, k) => (
+          <rect key={`b${k}`} x={k * 56 - 28} y="36" width="52" height="36" fill={k%2===0?'#0C0C16':'#0D0D18'} stroke="#06060D" strokeWidth="1" />
+        ))}
+        {Array.from({ length: 26 }, (_, k) => (
+          <rect key={`c${k}`} x={k * 56}      y="72" width="52" height="36" fill={k%2===0?'#0D0D18':'#0E0E1A'} stroke="#07070E" strokeWidth="1" />
+        ))}
+        {Array.from({ length: 27 }, (_, k) => (
+          <rect key={`d${k}`} x={k * 56 - 28} y="108" width="52" height="36" fill={k%2===0?'#0C0C16':'#0D0D18'} stroke="#06060D" strokeWidth="1" />
+        ))}
+
+        {/* Left stone pillar */}
+        <rect x="390" y="0" width="72" height="230" fill="#090912" stroke="#06060D" strokeWidth="1" />
+        {/* Right stone pillar */}
+        <rect x="978" y="0" width="72" height="230" fill="#090912" stroke="#06060D" strokeWidth="1" />
+
+        {/* Arch inner shadow (depth) */}
+        <path d="M 460 230 Q 720 95 980 230" fill="none" stroke="rgba(0,0,0,0.55)" strokeWidth="32" />
+        {/* Arch outer molding */}
+        <path d="M 460 230 Q 720 95 980 230" fill="none" stroke="#1E1E30" strokeWidth="10" />
+        {/* Arch inner highlight */}
+        <path d="M 460 230 Q 720 95 980 230" fill="none" stroke="#2A2A42" strokeWidth="4" />
+
+        {/* Keystone */}
+        <polygon points="712,90 720,68 728,90 724,98 716,98" fill="#1A1A2C" stroke="#282840" strokeWidth="1.5" />
+        <line x1="720" y1="68" x2="720" y2="58" stroke="#28284044" strokeWidth="2" />
       </svg>
 
-      {/* Corner rune elements */}
-      {[
-        { style: { top: '15%', left: '5%' } },
-        { style: { top: '15%', right: '5%' } },
-        { style: { bottom: '20%', left: '5%' } },
-        { style: { bottom: '20%', right: '5%' } },
-      ].map((pos, i) => (
-        <div
-          key={i}
-          className="absolute text-[#7C3AED] text-2xl select-none"
-          style={{
-            ...pos.style,
-            animation: `rune-pulse ${2.5 + i * 0.5}s ease-in-out infinite`,
-            animationDelay: `${i * 0.6}s`,
-          }}
-        >
-          ᚱ
+      {/* ── Left chain ── */}
+      <div style={{
+        position: 'absolute', top: 0, left: '7%',
+        transformOrigin: 'top center',
+        animation: 'chain-sway 5.5s ease-in-out infinite',
+        willChange: 'transform',
+      }}>
+        <svg width="28" height="240" viewBox="0 0 28 240">
+          {Array.from({ length: 12 }, (_, k) => (
+            k % 2 === 0
+              ? <ellipse key={k} cx="14" cy={k*20+9} rx="9"   ry="4.5" fill="none" stroke="#303050" strokeWidth="2" />
+              : <ellipse key={k} cx="14" cy={k*20+9} rx="4.5" ry="9"   fill="none" stroke="#2C2C4A" strokeWidth="2" />
+          ))}
+        </svg>
+      </div>
+
+      {/* ── Right chain ── */}
+      <div style={{
+        position: 'absolute', top: 0, right: '7%',
+        transformOrigin: 'top center',
+        animation: 'chain-sway 7s ease-in-out infinite',
+        animationDelay: '1.3s',
+        willChange: 'transform',
+      }}>
+        <svg width="28" height="240" viewBox="0 0 28 240">
+          {Array.from({ length: 12 }, (_, k) => (
+            k % 2 === 0
+              ? <ellipse key={k} cx="14" cy={k*20+9} rx="9"   ry="4.5" fill="none" stroke="#303050" strokeWidth="2" />
+              : <ellipse key={k} cx="14" cy={k*20+9} rx="4.5" ry="9"   fill="none" stroke="#2C2C4A" strokeWidth="2" />
+          ))}
+        </svg>
+      </div>
+
+      {/* ── Corner rune symbols (4 different runes) ── */}
+      {([
+        { pos: { top: '28%',    left: 'calc(240px + 24px)' }, char: 'ᚱ', dur: '2.8s', delay: '0s'   },
+        { pos: { top: '28%',    right: '4%'               }, char: 'ᚢ', dur: '3.4s', delay: '0.7s' },
+        { pos: { bottom: '18%', left: 'calc(240px + 24px)' }, char: 'ᚦ', dur: '3.0s', delay: '1.4s' },
+        { pos: { bottom: '18%', right: '4%'               }, char: 'ᚨ', dur: '2.6s', delay: '2.1s' },
+      ] as const).map((r, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          ...r.pos,
+          fontSize: 34,
+          color: '#7C3AED',
+          fontFamily: 'serif',
+          lineHeight: 1,
+          animation: `rune-pulse ${r.dur} ease-in-out ${r.delay} infinite`,
+          willChange: 'opacity, filter',
+          userSelect: 'none',
+        }}>
+          {r.char}
         </div>
       ))}
 
-      {/* Mist at bottom */}
-      <div
-        className="absolute bottom-0 left-0 right-0"
-        style={{
-          height: '120px',
-          background: 'linear-gradient(to top, rgba(20,10,40,0.7), transparent)',
-          animation: 'mist-drift 8s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 right-0"
-        style={{
-          height: '80px',
-          background: 'linear-gradient(to top, rgba(15,8,30,0.5), transparent)',
-          animation: 'mist-drift 11s ease-in-out infinite',
-          animationDelay: '2s',
-        }}
-      />
+      {/* ── Water drips from ceiling ── */}
+      {drips.map((d, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          left: d.left,
+          top: 0,
+          width: 3,
+          height: 9,
+          borderRadius: '0 0 60% 60%',
+          background: 'rgba(88,110,185,0.65)',
+          animation: `water-drip ${d.dur} ease-in ${d.delay} infinite`,
+          willChange: 'transform, opacity',
+          ['--drip-h' as any]: d.h,
+          opacity: 0,
+        }} />
+      ))}
+
+      {/* ── Lava glow at bottom ── */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px',
+        background: 'linear-gradient(to top, rgba(185,45,0,0.48) 0%, rgba(110,18,0,0.22) 50%, transparent 100%)',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '95px',
+        background: 'radial-gradient(ellipse 85% 100% at 50% 100%, rgba(255,115,0,0.72) 0%, rgba(200,40,0,0.35) 55%, transparent 100%)',
+        animation: 'lava-pulse 2.8s ease-in-out infinite',
+        willChange: 'opacity',
+      }} />
+      {/* Hot surface line */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '6px',
+        background: 'linear-gradient(90deg, #CC2200, #FF7700, #FF4400, #FF9900, #FF3300, #FF7700, #CC2200)',
+        opacity: 0.78,
+        animation: 'lava-pulse 1.9s ease-in-out infinite',
+        animationDelay: '0.6s',
+        willChange: 'opacity',
+      }} />
+
+      {/* ── Ember particles rising from lava ── */}
+      {embers.map((e, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          left: e.left,
+          bottom: 0,
+          width: e.size,
+          height: e.size,
+          borderRadius: '50%',
+          background: e.color,
+          boxShadow: `0 0 4px ${e.color}`,
+          animation: `ember-rise ${e.dur} ease-out ${e.delay} infinite`,
+          willChange: 'transform, opacity',
+          ['--edrift' as any]:  `${e.driftA}px`,
+          ['--edrift2' as any]: `${e.driftB}px`,
+          opacity: 0,
+        }} />
+      ))}
     </div>
   );
 }
