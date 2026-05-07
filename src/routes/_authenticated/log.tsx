@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/log")({
 const TYPES = [
   { value: "strength", label: "💪 Strength" },
   { value: "cardio", label: "🏃 Cardio" },
-  { value: "flexibility", label: "🧘 Flex" },
+  { value: "flexibility", label: "🧘 Flexibility" },
 ] as const;
 
 function LogPage() {
@@ -62,11 +62,11 @@ function LogPage() {
       <form onSubmit={submit} className="mt-6 space-y-5">
         <div>
           <p className="text-xs font-semibold text-muted-foreground mb-2">Type</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 text-center">
             {TYPES.map((t) => (
               <button
                 type="button" key={t.value} onClick={() => setType(t.value)}
-                className={`py-3 rounded-2xl text-sm font-semibold transition-all ${
+                className={`py-3 px-1 rounded-2xl text-xs font-semibold transition-all whitespace-nowrap ${
                   type === t.value
                     ? "bg-primary text-primary-foreground shadow-glow"
                     : "bg-card text-foreground shadow-card"

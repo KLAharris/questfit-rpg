@@ -53,7 +53,7 @@ function HomePage() {
       </div>
 
       {/* Level + XP card */}
-      <div className="mt-6 rounded-3xl bg-card p-5 shadow-card relative overflow-hidden border-l-4 border-primary">
+      <div className="mt-6 rounded-3xl bg-card p-5 shadow-card relative overflow-hidden ring-1 ring-border">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-primary text-primary-foreground grid place-items-center font-display font-bold text-2xl shadow-glow">
             {profile.level}
