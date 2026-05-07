@@ -53,21 +53,21 @@ function HomePage() {
       </div>
 
       {/* Level + XP card */}
-      <div className="mt-6 rounded-3xl bg-foreground text-background p-5 shadow-card relative overflow-hidden">
-        <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-primary/30 blur-2xl" />
-        <div className="relative flex items-center gap-4">
+      <div className="mt-6 rounded-3xl bg-card p-5 shadow-card relative overflow-hidden border-l-4 border-primary">
+        <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-primary text-primary-foreground grid place-items-center font-display font-bold text-2xl shadow-glow">
             {profile.level}
           </div>
           <div className="flex-1">
-            <p className="text-[10px] uppercase tracking-widest opacity-70 font-semibold">Level</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Level</p>
             <p className="font-display text-xl font-bold">{xpInto} / {XP_PER_LEVEL} XP</p>
           </div>
         </div>
-        <div className="mt-4 h-2.5 w-full rounded-full bg-white/10 overflow-hidden">
+        <div className="mt-4 h-2.5 w-full rounded-full bg-muted overflow-hidden">
           <div className="h-full rounded-full bg-primary" style={{ width: `${xpPct}%` }} />
         </div>
-        <p className="mt-2 text-xs opacity-70">{XP_PER_LEVEL - xpInto} XP to level {profile.level + 1}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{XP_PER_LEVEL - xpInto} XP to level {profile.level + 1}</p>
+        <p className="mt-1 text-xs text-muted-foreground">Total XP: {profile.xp.toLocaleString()}</p>
       </div>
 
       {/* Stats */}
