@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Lock } from "lucide-react";
 import { getAchievements } from "@/lib/quest.functions";
+import { ACHIEVEMENTS_STALE } from "@/lib/query-keys";
 
 export const Route = createFileRoute("/_authenticated/achievements")({
   head: () => ({
@@ -14,12 +15,33 @@ export const Route = createFileRoute("/_authenticated/achievements")({
   component: AchievementsPage,
 });
 
+function AchievementsSkeleton() {
+  return (
+    <div className="px-5 pt-12 pb-6 space-y-6">
+      <div className="space-y-2">
+        <div className="h-3 w-20 rounded bg-muted animate-pulse" />
+        <div className="h-8 w-44 rounded bg-muted animate-pulse" />
+        <div className="h-4 w-24 rounded bg-muted animate-pulse" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="aspect-[4/5] rounded-3xl bg-muted animate-pulse" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function AchievementsPage() {
   const fn = useServerFn(getAchievements);
-  const { data, isLoading } = useQuery({ queryKey: ["achievements"], queryFn: () => fn() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["achievements"],
+    queryFn: () => fn(),
+    staleTime: ACHIEVEMENTS_STALE,
+  });
 
   if (isLoading || !data) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
+    return <AchievementsSkeleton />;
   }
 
   const unlocked = data.filter((d: any) => d.unlocked).length;
