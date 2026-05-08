@@ -1,11 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from "recharts";
 import { LogOut } from "lucide-react";
 import { getStats } from "@/lib/quest.functions";
 import { XP_PER_LEVEL, xpIntoLevel } from "@/lib/xp";
+import {
+  getDailyQuests,
+  readDoneExercises,
+  type DailyQuestDef,
+} from "@/lib/daily-quests";
 import { supabase } from "@/integrations/supabase/client";
 import { STATS_STALE } from "@/lib/query-keys";
 
@@ -305,7 +310,89 @@ function CastleBackground() {
   );
 }
 
+const TYPE_META = {
+  strength:    { icon: "⚔️", label: "Strength",    accent: "#EF4444" },
+  cardio:      { icon: "🏃", label: "Cardio",       accent: "#3B82F6" },
+  flexibility: { icon: "🧘", label: "Flexibility",  accent: "#10B981" },
+} as const;
+
+function DailyQuestCard({
+  quest,
+  done,
+  onStart,
+}: {
+  quest: DailyQuestDef;
+  done: boolean;
+  onStart: () => void;
+}) {
+  const meta = TYPE_META[quest.type];
+
+  return (
+    <div
+      className="flex items-center gap-3 rounded-2xl px-4 py-3"
+      style={{
+        background: "rgba(255,255,255,0.92)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        opacity: done ? 0.65 : 1,
+        transition: "opacity 0.2s",
+      }}
+    >
+      <span className="text-xl shrink-0" aria-hidden>{meta.icon}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-gray-900 leading-tight truncate">{quest.exercise}</p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <span
+            className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white"
+            style={{ background: meta.accent }}
+          >
+            {meta.label}
+          </span>
+          <span className="text-xs text-gray-500">{quest.sets}</span>
+        </div>
+      </div>
+      <span className="text-xs font-semibold shrink-0 text-gray-600">+{quest.xp} XP</span>
+      {done ? (
+        <span
+          className="h-7 w-7 rounded-full grid place-items-center shrink-0"
+          style={{ background: "#22C55E" }}
+          aria-label="Completed"
+        >
+          <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 6l3 3 5-5" />
+          </svg>
+        </span>
+      ) : (
+        <button
+          onClick={onStart}
+          className="shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-80"
+          style={{ background: meta.accent }}
+          aria-label={`Start ${quest.exercise}`}
+        >
+          Start →
+        </button>
+      )}
+    </div>
+  );
+}
+
 function HomePage() {
+  const navigate = useNavigate();
+  const dailyQuests = useMemo(() => getDailyQuests(), []);
+  const [doneExercises, setDoneExercises] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setDoneExercises(readDoneExercises());
+  }, []);
+
+  const startQuest = (quest: DailyQuestDef) => {
+    sessionStorage.setItem(
+      "questfit-prefill",
+      JSON.stringify({ exercise: quest.exercise, type: quest.type, isDailyQuest: true }),
+    );
+    navigate({ to: "/log" });
+  };
+
   const fn = useServerFn(getStats);
   const { data, isLoading } = useQuery({
     queryKey: ["stats"],
@@ -378,6 +465,23 @@ function HomePage() {
                 </p>
               </div>
               <p className="text-xs text-amber-900/70 font-semibold">Keep it alive!</p>
+            </div>
+
+            {/* Daily Quests */}
+            <div>
+              <h2 className="mb-3 font-display text-lg font-bold md:text-white mt-7 md:mt-0">
+                Daily Quests
+              </h2>
+              <div className="space-y-2">
+                {dailyQuests.map((q) => (
+                  <DailyQuestCard
+                    key={q.id}
+                    quest={q}
+                    done={doneExercises.has(q.exercise.toLowerCase())}
+                    onStart={() => startQuest(q)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 

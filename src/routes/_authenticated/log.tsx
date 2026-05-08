@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { logWorkout } from "@/lib/quest.functions";
+import { getDailyQuests, markDailyQuestDone } from "@/lib/daily-quests";
 
 export const Route = createFileRoute("/_authenticated/log")({
   head: () => ({
@@ -21,6 +22,7 @@ const TYPES = [
   { value: "cardio", label: "🏃 Cardio" },
   { value: "flexibility", label: "🧘 Flexibility" },
 ] as const;
+
 
 function DungeonBackground() {
   const drips = [
@@ -234,6 +236,10 @@ function LogPage() {
       setTimeout(() => setPopup(null), 2400);
       if (res.unlockedBadges.length > 0) {
         toast.success(`🏆 Achievement: ${res.unlockedBadges.join(", ")}`);
+      }
+      const dailyNames = getDailyQuests().map((q) => q.exercise.toLowerCase());
+      if (dailyNames.includes(exercise.trim().toLowerCase())) {
+        markDailyQuestDone(exercise.trim());
       }
       setExercise("");
       qc.invalidateQueries({ queryKey: ["stats"] });
