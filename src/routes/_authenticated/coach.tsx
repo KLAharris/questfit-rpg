@@ -127,11 +127,6 @@ function CoachPage() {
     const chatDiv = document.createElement("div");
     chatDiv.className = "bn-customerchat";
     chatDiv.setAttribute("bot_id", "69fcb2e0fb3079f007910dcc");
-    chatDiv.setAttribute("bot_name", "Quest Guide");
-    chatDiv.setAttribute("theme_color", "C8FF00");
-    chatDiv.setAttribute("locale", "th");
-    chatDiv.setAttribute("greeting_message", "สวัสดีครับ นักรบ! ⚔️ ผมคือ Quest Guide พร้อมช่วยคุณพิชิตทุก Quest!");
-    chatDiv.setAttribute("default_open", "false");
     document.body.appendChild(chatDiv);
 
     const script = document.createElement("script");
