@@ -12,4 +12,16 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  vite: {
+    define: {
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify("https://awgjpktpermkpsddvhao.supabase.co"),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Z2pwa3RwZXJta3BzZGR2aGFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzcxMTIsImV4cCI6MjA5MzcxMzExMn0.GXISWDKG-pWgxf88QLP_SjI03Ov2J76pILEivL0LY2Y"
+      ),
+      "process.env.SUPABASE_URL": JSON.stringify("https://awgjpktpermkpsddvhao.supabase.co"),
+      "process.env.SUPABASE_PUBLISHABLE_KEY": JSON.stringify(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Z2pwa3RwZXJta3BzZGR2aGFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzcxMTIsImV4cCI6MjA5MzcxMzExMn0.GXISWDKG-pWgxf88QLP_SjI03Ov2J76pILEivL0LY2Y"
+      ),
+    },
+  },
 });
